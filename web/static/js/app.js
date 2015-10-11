@@ -23,7 +23,11 @@ editor.on("change", function(e) {
 });
 
 editor.session.selection.on("changeCursor", function(e) {
-    channel.push("move", { user: userName, position: editor.getCursorPosition() });
+    // getCursorPosition だと正確な絶対座標が割り出せないため、この方法をとります
+    // .ace_text-input に座標が適応されるのに少しラグがあるので、100ms 遅延させます
+    setTimeout(function() {
+        channel.push("move", { user: userName, position: $(".ace_text-input").offset() });
+    }, 100);
 }); 
 
 function applyChangeEvent(event) {
@@ -89,22 +93,12 @@ channel.on("move", function(dt) {
         cursor = $("<div></div>");
         cursor.attr("id", "cm-cursor-" + dt.user)
             .addClass("cm-cursor");
-        cursor.appendTo("#cm-area-cursor");
+        cursor.appendTo("body");
         cursors[dt.user] = cursor;
     } else {
         cursor = cursors[dt.user];
     }
     var position = dt.position;
-    cursor.css("top", position.row * 16 + "px");
-    cursor.text(editor.getValue().split("\n")[position.row].substring(0, position.column));
+    cursor.css("top", position.top + "px")
+        .css("left", position.left + "px");
 });
-
-// init cursor area
-var cursorArea = $("<div></div>"),
-    aceContentOffset = $(".ace_content").offset();
-
-cursorArea.attr("id", "cm-area-cursor")
-    .css("top", aceContentOffset.top + "px")
-    .css("left", aceContentOffset.left + 41 + 3 + "px");
-cursorArea.appendTo($("body"));
-

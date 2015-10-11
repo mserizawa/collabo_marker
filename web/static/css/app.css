@@ -9,30 +9,10 @@
 #cm-editor {
     height: 500px;
 }
-#cm-area-cursor {
-    position: absolute;
-    font: 12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
-}
 
 .cm-cursor {
-    white-space: pre;
-    color: green;
+    background-color: green;
     position: absolute;
     height: 1em;
-    font: inherit !important;
-    text-rendering: auto;
-    letter-spacing: normal;
-    word-spacing: normal;
-    text-transform: none;
-    text-align: start;
-}
-.cm-cursor:after {
-    display: block;
-    position: absolute;
-    background-color: red;
-    content: "";
-    height: 100%;
     width: 2px;
-    top: 0px;
-    right: 0px;
 }
