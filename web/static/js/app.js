@@ -2,7 +2,7 @@ import "deps/phoenix_html/web/static/js/phoenix_html"
 import {Socket} from "deps/phoenix/web/static/js/phoenix/"
 
 angular.module("collaboMarkerApp", [])
-    .controller("CollaboMarkerController", function($scope) {
+    .controller("CollaboMarkerController", function($scope, $http) {
 
         $scope.users = [];
 
@@ -16,7 +16,8 @@ angular.module("collaboMarkerApp", [])
             // （ace の仕様上、これがないとうまく制御できなかったため）
             isFromMe = true,
             aceTextInputElement = null,
-            cmEditorElement = null;
+            cmEditorElement = null,
+            saveTimer = null;
 
         var socket = new Socket("/socket");
         socket.connect();
@@ -26,6 +27,10 @@ angular.module("collaboMarkerApp", [])
                 user.cursor = {};
                 $scope.users.push(user);
             });
+            isFromMe = false;
+            editor.setValue(dt.contents);
+            editor.clearSelection();
+
             $scope.$apply();
         });
         // TODO: このタイミングで現時点でのコンテンツ内容を共有してもらう
@@ -45,6 +50,10 @@ angular.module("collaboMarkerApp", [])
                 channel.push("edit", { user: myself, event: e });
             }
             document.getElementById("cm-preview").innerHTML = marked(editor.getValue());
+            if (saveTimer) {
+                clearTimeout(saveTimer);
+            }
+            saveTimer = setTimeout(save, 3000);
         });
 
         editor.session.selection.on("changeCursor", function(e) {
@@ -141,6 +150,15 @@ angular.module("collaboMarkerApp", [])
             $scope.$apply();
         }
 
+        function save() {
+            $http({
+                method: "POST",
+                url: "/save",
+                data: { contents: editor.getValue() },
+                headers: ["application/json"]
+            });
+        }
+
         channel.on("edit", function(dt) {
             if (dt.user.name === myself.name) {
                 return;
@@ -185,5 +203,4 @@ angular.module("collaboMarkerApp", [])
             $scope.$apply();
             calculateCursorScreenPosition();
         });
-
     });

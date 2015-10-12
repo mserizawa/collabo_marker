@@ -19,6 +19,12 @@ defmodule CollaboMarker.Router do
     get "/", PageController, :index
   end
 
+  scope "/save", CollaboMarker do
+    pipe_through :api
+
+    post "/", PageController, :save
+  end
+
   # Other scopes may use custom stacks.
   # scope "/api", CollaboMarker do
   #   pipe_through :api

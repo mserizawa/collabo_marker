@@ -12,8 +12,10 @@ defmodule CollaboMarker.EditorChannel do
 
     send(self, :after_join)
 
+    contents = ConCache.get_or_store(:cache, "contents", fn() -> "" end)
+
     # TODO: send current contents
-    {:ok, %{"users" => users}, socket}
+    {:ok, %{"users" => users, "contents" => contents}, socket}
   end
   def join("editor:" <> _private_room_id, _auth_msg, socket) do
     {:error, %{reason: "unauthorized"}}
