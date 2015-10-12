@@ -15,7 +15,6 @@
 }
 
 .cm-cursor {
-    background-color: green;
     position: absolute;
     height: 1em;
     width: 2px;

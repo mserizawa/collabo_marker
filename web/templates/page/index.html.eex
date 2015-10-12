@@ -8,5 +8,5 @@
 </div>
 
 <div class="cm-cursor" ng-repeat="user in users"
-    ng-style="{left: user.cursor.left, top: user.cursor.top}">
+    ng-style="{left: user.cursor.left, top: user.cursor.top, 'background-color': user.color}">
 </div>

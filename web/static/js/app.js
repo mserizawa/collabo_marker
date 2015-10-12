@@ -13,7 +13,10 @@ angular.module("collaboMarkerApp", [])
 
         var editor = ace.edit("cm-editor"),
             // TODO: これは後でログイン的な機構で代替する
-            userName = Math.random().toString(36).slice(-8),
+            myself = {
+                name: Math.random().toString(36).slice(-8),
+                color: '#'+Math.floor(Math.random()*16777215).toString(16)
+            },
             // 他ユーザからの push が無限ループしないように制御するフラグ
             // （ace の仕様上、これがないとうまく制御できなかったため）
             isFromMe = true,
@@ -26,7 +29,7 @@ angular.module("collaboMarkerApp", [])
 
         editor.on("change", function(e) {
             if (isFromMe) {
-                channel.push("edit", { user: userName, event: e });
+                channel.push("edit", { user: myself, event: e });
             }
         });
 
@@ -42,7 +45,7 @@ angular.module("collaboMarkerApp", [])
                     top = box.top + window.pageYOffset - de.clientTop,
                     left = box.left + window.pageXOffset - de.clientLeft;
 
-                channel.push("move", { user: userName, position: {left: left, top: top} });
+                channel.push("move", { user: myself, position: {left: left, top: top} });
             }, 100);
         }); 
 
@@ -92,7 +95,7 @@ angular.module("collaboMarkerApp", [])
         }
 
         channel.on("edit", function(dt) {
-            if (dt.user === userName) {
+            if (dt.user.name === myself.name) {
                 return;
             }
             isFromMe = false;
@@ -100,19 +103,20 @@ angular.module("collaboMarkerApp", [])
         });
 
         channel.on("move", function(dt) {
-            if (dt.user === userName) {
+            if (dt.user.name === myself.name) {
                 return;
             }
             var user = null;
             $scope.users.some(function(elem) {
-                if (elem.name === dt.user) {
+                if (elem.name === dt.user.name) {
                     user = elem;
                 }
             });
             if (!user) {
                 // TODO: create init function
                 user = {
-                    name: dt.user,
+                    name: dt.user.name,
+                    color: dt.user.color,
                     cursor: { left: 0, top: 0 }
                 };
                 $scope.users.push(user);
