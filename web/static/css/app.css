@@ -10,8 +10,12 @@
     font-family: 'Architects Daughter', cursive;
 }
 
-#cm-editor {
+#cm-editor, #cm-preview {
     height: 500px;
+}
+
+#cm-preview {
+    overflow: auto;
 }
 
 .cm-cursor {

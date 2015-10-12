@@ -26,6 +26,9 @@ angular.module("collaboMarkerApp", [])
 
         // editor setting
         editor.$blockScrolling = Infinity;
+        editor.setTheme("ace/theme/monokai");
+        editor.getSession().setMode("ace/mode/markdown");
+        editor.getSession().setUseWrapMode(true);
 
         editor.on("input", function() {
             isFromMe = true;
