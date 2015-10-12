@@ -20,7 +20,8 @@ angular.module("collaboMarkerApp", [])
             // 他ユーザからの push が無限ループしないように制御するフラグ
             // （ace の仕様上、これがないとうまく制御できなかったため）
             isFromMe = true,
-            aceTextInputElement = null;
+            aceTextInputElement = null,
+            cmEditorElement = null;
 
         $scope.users = [];
 
@@ -47,10 +48,13 @@ angular.module("collaboMarkerApp", [])
                 if (!aceTextInputElement) {
                     aceTextInputElement = document.getElementsByClassName("ace_text-input")[0];
                 }
-                var de = document.documentElement,
-                    box = aceTextInputElement.getBoundingClientRect(),
-                    top = box.top + window.pageYOffset - de.clientTop,
-                    left = box.left + window.pageXOffset - de.clientLeft;
+
+                var style = window.getComputedStyle(aceTextInputElement),
+                    top = style.getPropertyValue("top"),
+                    left = style.getPropertyValue("left");
+
+                top = Number(top.substring(0, top.length - 2));
+                left = Number(left.substring(0, left.length - 2));
 
                 channel.push("move", { user: myself, position: {left: left, top: top} });
             }, 100);
@@ -128,8 +132,18 @@ angular.module("collaboMarkerApp", [])
                 };
                 $scope.users.push(user);
             }
-            user.cursor.left = dt.position.left + "px";
-            user.cursor.top = dt.position.top + "px";
+
+            if (!cmEditorElement) {
+                cmEditorElement = document.getElementById("cm-editor");
+            }
+
+            var de = document.documentElement,
+                box = cmEditorElement.getBoundingClientRect(),
+                top = box.top + window.pageYOffset - de.clientTop,
+                left = box.left + window.pageXOffset - de.clientLeft;
+
+            user.cursor.left = dt.position.left + left + "px";
+            user.cursor.top = dt.position.top + top + "px";
             $scope.$apply();
         });
 
