@@ -19,7 +19,7 @@ defmodule CollaboMarker.Mixfile do
   def application do
     [mod: {CollaboMarker, []},
      applications: [:phoenix, :phoenix_html, :cowboy, :logger,
-                    :phoenix_ecto, :postgrex]]
+                    :phoenix_ecto, :postgrex, :con_cache]]
   end
 
   # Specifies which paths to compile per environment.
@@ -35,7 +35,8 @@ defmodule CollaboMarker.Mixfile do
      {:postgrex, ">= 0.0.0"},
      {:phoenix_html, "~> 2.1"},
      {:phoenix_live_reload, "~> 1.0", only: :dev},
-     {:cowboy, "~> 1.0"}]
+     {:cowboy, "~> 1.0"},
+     {:con_cache, "~> 0.8.1"}]
   end
 
   # Aliases are shortcut or tasks specific to the current project.

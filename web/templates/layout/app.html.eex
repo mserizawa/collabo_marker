@@ -10,13 +10,11 @@
     <title>Collabo Marker</title>
     <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
   </head>
 
   <body>
     <div class="container" role="main" ng-controller="CollaboMarkerController as cm">
-      <div class="header">
-        <h1>> Collabo Marker</h1>
-      </div>
 
       <%= @inner %>
 

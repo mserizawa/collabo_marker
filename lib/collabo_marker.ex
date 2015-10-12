@@ -11,6 +11,7 @@ defmodule CollaboMarker do
       supervisor(CollaboMarker.Endpoint, []),
       # Start the Ecto repository
       worker(CollaboMarker.Repo, []),
+      worker(ConCache, [[], [name: :cache]])
       # Here you could define other workers and supervisors as children
       # worker(CollaboMarker.Worker, [arg1, arg2, arg3]),
     ]

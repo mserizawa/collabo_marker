@@ -4,12 +4,7 @@ import {Socket} from "deps/phoenix/web/static/js/phoenix/"
 angular.module("collaboMarkerApp", [])
     .controller("CollaboMarkerController", function($scope) {
 
-        var socket = new Socket("/socket");
-        socket.connect();
-        var channel = socket.channel("editor:lobby", {});
-        channel.join();
-        // TODO: このタイミングで現時点でのコンテンツ内容を共有してもらう
-        // TODO: カーソルも join のタイミングで初期化したい
+        $scope.users = [];
 
         var editor = ace.edit("cm-editor"),
             // TODO: これは後でログイン的な機構で代替する
@@ -23,7 +18,18 @@ angular.module("collaboMarkerApp", [])
             aceTextInputElement = null,
             cmEditorElement = null;
 
-        $scope.users = [];
+        var socket = new Socket("/socket");
+        socket.connect();
+        var channel = socket.channel("editor:lobby", {user: myself});
+        channel.join().receive("ok", function(dt) {
+            dt.users.forEach(function(user) {
+                user.cursor = {};
+                $scope.users.push(user);
+            });
+            $scope.$apply();
+        });
+        // TODO: このタイミングで現時点でのコンテンツ内容を共有してもらう
+        // TODO: カーソルも join のタイミングで初期化したい
 
         // editor setting
         editor.$blockScrolling = Infinity;
@@ -116,6 +122,10 @@ angular.module("collaboMarkerApp", [])
             }
 
             $scope.users.forEach(function(user) {
+                if (user.name === myself.name) {
+                    user.cursor.hidden = true;
+                    return;
+                }
                 var de = document.documentElement,
                     box = cmEditorElement.getBoundingClientRect(),
                     offsetTop = box.top + window.pageYOffset - de.clientTop,
@@ -163,6 +173,16 @@ angular.module("collaboMarkerApp", [])
             user.cursor.top = dt.position.top;
             user.cursor.scrollTop = dt.position.scrollTop;
 
+            calculateCursorScreenPosition();
+        });
+
+        channel.on("update_user", function(dt) {
+            $scope.users = [];
+            dt.users.forEach(function(user) {
+                user.cursor = {};
+                $scope.users.push(user);
+            });
+            $scope.$apply();
             calculateCursorScreenPosition();
         });
 

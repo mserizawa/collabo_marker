@@ -1,10 +1,31 @@
+<div class="header">
+    <div class="row">
+        <div class="col-xs-4">
+            <h1 class="theme-font">> Collabo Marker</h1>
+        </div>
+        <div class="col-xs-8">
+            <div class="row">
+                <div class="col-xs-12">
+                    <p class="theme-font" style="margin: 10px 0 0px">Collaborators</p>
+                    <div class="user-list">
+                        <div class="user-icon" ng-repeat="user in users"
+                                ng-style="{'background-color': user.color}">
+                            <span class="glyphicon glyphicon-user"></span> {{ user.name }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="row">
-  <div class="col-xs-6">
-    <div id="cm-editor"></div>
-  </div>
-  <div class="col-xs-6">
-    <div id="cm-preview"></div>
-  </div>
+    <div class="col-xs-6">
+        <div id="cm-editor"></div>
+    </div>
+    <div class="col-xs-6">
+        <div id="cm-preview"></div>
+    </div>
 </div>
 
 <div class="cm-cursor" ng-repeat="user in users" ng-if="!user.cursor.hidden"
