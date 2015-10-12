@@ -8,13 +8,14 @@
     <meta name="author" content="">
 
     <title>Collabo Marker</title>
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
   </head>
 
   <body>
     <div class="container" role="main">
       <div class="header">
-        <h1>Collabo Marker</h1>
+        <h1>> Collabo Marker</h1>
       </div>
 
       <%= @inner %>
