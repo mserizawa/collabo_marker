@@ -15,7 +15,7 @@ angular.module("collaboMarkerApp", [])
             // TODO: これは後でログイン的な機構で代替する
             myself = {
                 name: Math.random().toString(36).slice(-8),
-                color: '#'+Math.floor(Math.random()*16777215).toString(16)
+                color: randomColor({luminosity: "dark"})
             },
             // 他ユーザからの push が無限ループしないように制御するフラグ
             // （ace の仕様上、これがないとうまく制御できなかったため）
