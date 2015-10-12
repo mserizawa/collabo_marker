@@ -27,6 +27,9 @@ angular.module("collaboMarkerApp", [])
         // editor setting
         editor.$blockScrolling = Infinity;
 
+        editor.on("input", function() {
+            isFromMe = true;
+        });
         editor.on("change", function(e) {
             if (isFromMe) {
                 channel.push("edit", { user: myself, event: e });
