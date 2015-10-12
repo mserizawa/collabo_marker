@@ -7,8 +7,8 @@
   </div>
 </div>
 
-<div class="cm-cursor" ng-repeat="user in users"
-       ng-style="{left: user.cursor.left, top: user.cursor.top}">
+<div class="cm-cursor" ng-repeat="user in users" ng-if="!user.cursor.hidden"
+       ng-style="{left: user.cursor.screenLeft, top: user.cursor.screenTop}">
     <div class="cm-cursor-caret"
             ng-style="{'background-color': user.color}">
     </div>

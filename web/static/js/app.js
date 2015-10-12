@@ -15,7 +15,7 @@ angular.module("collaboMarkerApp", [])
             // TODO: これは後でログイン的な機構で代替する
             myself = {
                 name: Math.random().toString(36).slice(-8),
-                color: randomColor({luminosity: "dark"})
+                color: randomColor({luminosity: "light"})
             },
             // 他ユーザからの push が無限ループしないように制御するフラグ
             // （ace の仕様上、これがないとうまく制御できなかったため）
@@ -51,14 +51,19 @@ angular.module("collaboMarkerApp", [])
 
                 var style = window.getComputedStyle(aceTextInputElement),
                     top = style.getPropertyValue("top"),
-                    left = style.getPropertyValue("left");
+                    left = style.getPropertyValue("left"),
+                    scrollTop = editor.getSession().getScrollTop();
 
                 top = Number(top.substring(0, top.length - 2));
                 left = Number(left.substring(0, left.length - 2));
 
-                channel.push("move", { user: myself, position: {left: left, top: top} });
+                channel.push("move", { user: myself, position: {left: left, top: top, scrollTop: scrollTop} });
             }, 100);
-        }); 
+        });
+
+        editor.session.on("changeScrollTop", function() {
+            calculateCursorScreenPosition();
+        });
 
         function applyChangeEvent(event) {
             var contents = editor.getValue().split("\n");
@@ -105,6 +110,27 @@ angular.module("collaboMarkerApp", [])
             editor.getSelection().setRange(range);
         }
 
+        function calculateCursorScreenPosition() {
+            if (!cmEditorElement) {
+                cmEditorElement = document.getElementById("cm-editor");
+            }
+
+            $scope.users.forEach(function(user) {
+                var de = document.documentElement,
+                    box = cmEditorElement.getBoundingClientRect(),
+                    offsetTop = box.top + window.pageYOffset - de.clientTop,
+                    offsetLeft = box.left + window.pageXOffset - de.clientLeft;
+
+                var top = user.cursor.top - editor.getSession().getScrollTop();
+                user.cursor.hidden = (top < 0 || top > 500);
+
+                user.cursor.screenLeft = user.cursor.left + offsetLeft + "px";
+                user.cursor.screenTop = top + offsetTop + "px";
+            });
+
+            $scope.$apply();
+        }
+
         channel.on("edit", function(dt) {
             if (dt.user.name === myself.name) {
                 return;
@@ -128,23 +154,16 @@ angular.module("collaboMarkerApp", [])
                 user = {
                     name: dt.user.name,
                     color: dt.user.color,
-                    cursor: { left: 0, top: 0 }
+                    cursor: { left: 0, top: 0, scrollTop: 0,
+                        screenLeft: "0px", screenTop: "0px", hidden: false }
                 };
                 $scope.users.push(user);
             }
+            user.cursor.left = dt.position.left;
+            user.cursor.top = dt.position.top;
+            user.cursor.scrollTop = dt.position.scrollTop;
 
-            if (!cmEditorElement) {
-                cmEditorElement = document.getElementById("cm-editor");
-            }
-
-            var de = document.documentElement,
-                box = cmEditorElement.getBoundingClientRect(),
-                top = box.top + window.pageYOffset - de.clientTop,
-                left = box.left + window.pageXOffset - de.clientLeft;
-
-            user.cursor.left = dt.position.left + left + "px";
-            user.cursor.top = dt.position.top + top + "px";
-            $scope.$apply();
+            calculateCursorScreenPosition();
         });
 
     });
