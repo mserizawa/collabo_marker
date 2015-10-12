@@ -7,7 +7,7 @@ A Collaborative real-time markdown editor.
 ## TODO
 
 - [ ] Implement cursor rendering function
-- [ ] Substitute Angularjs for jQuery
+- [x] Substitute Angularjs for jQuery
 - [ ] Implement markdown preview function
 - [ ] Implement user management function
 - [ ] Implement chat function

@@ -6,3 +6,7 @@
     here comes the rendered preview
   </div>
 </div>
+
+<div class="cm-cursor" ng-repeat="user in users"
+    ng-style="{left: user.cursor.left, top: user.cursor.top}">
+</div>
