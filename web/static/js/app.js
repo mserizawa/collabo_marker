@@ -31,6 +31,7 @@ angular.module("collaboMarkerApp", [])
             if (isFromMe) {
                 channel.push("edit", { user: myself, event: e });
             }
+            document.getElementById("cm-preview").innerHTML = marked(editor.getValue());
         });
 
         editor.session.selection.on("changeCursor", function(e) {

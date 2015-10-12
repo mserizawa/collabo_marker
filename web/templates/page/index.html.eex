@@ -3,7 +3,7 @@
     <div id="cm-editor"></div>
   </div>
   <div class="col-xs-6">
-    here comes the rendered preview
+    <div id="cm-preview"></div>
   </div>
 </div>
 
