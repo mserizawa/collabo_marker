@@ -16,6 +16,8 @@
 
 .cm-cursor {
     position: absolute;
+}
+.cm-cursor-caret {
     height: 1em;
     width: 2px;
     animation-name: cursor-flicker;
@@ -23,7 +25,6 @@
     animation-iteration-count: infinite;
     animation-timing-function: ease-in-out;
 }
-
 @keyframes cursor-flicker {
     from {
         opacity: 1;
@@ -31,4 +32,13 @@
     to {
         opacity: 0;
     }
+}
+
+.cm-cursor-name {
+    position: relative;
+    color: white;
+    font-size: 0.8em;
+    padding: 3px;
+    top: -3em;
+    z-index: 100;
 }

@@ -8,5 +8,11 @@
 </div>
 
 <div class="cm-cursor" ng-repeat="user in users"
-    ng-style="{left: user.cursor.left, top: user.cursor.top, 'background-color': user.color}">
+       ng-style="{left: user.cursor.left, top: user.cursor.top}">
+    <div class="cm-cursor-caret"
+            ng-style="{'background-color': user.color}">
+    </div>
+    <span class="cm-cursor-name" ng-style="{'background-color': user.color}">
+        {{ user.name }}
+    </span>
 </div>
