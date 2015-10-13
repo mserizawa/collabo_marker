@@ -14,3 +14,5 @@ A Collaborative real-time markdown editor.
 - [x] Implement content share function
 - [ ] Implement chat function
 - [x] Fix layout
+- [ ] Synchronize scrollTop between editor and preview
+- [ ] Set cursor position on load
