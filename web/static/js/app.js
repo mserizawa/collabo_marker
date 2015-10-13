@@ -33,8 +33,6 @@ angular.module("collaboMarkerApp", [])
 
             $scope.$apply();
         });
-        // TODO: このタイミングで現時点でのコンテンツ内容を共有してもらう
-        // TODO: カーソルも join のタイミングで初期化したい
 
         // editor setting
         editor.$blockScrolling = Infinity;
