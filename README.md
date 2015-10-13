@@ -13,4 +13,4 @@ A Collaborative real-time markdown editor.
 - [ ] Implement login function
 - [x] Implement content share function
 - [ ] Implement chat function
-- [ ] Fix layout
+- [x] Fix layout
