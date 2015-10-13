@@ -81,9 +81,6 @@ body {
     padding-top: 4px;
     background-color: rgba(0, 0, 0, 0.25);
     border-radius: 4px;
-
-    // todo: remove later;
-    margin-bottom: 80px;
 }
 
 #cm-messages {
@@ -118,4 +115,16 @@ body {
 }
 #cm-input-message:focus {
     outline: 0;
+}
+
+footer {
+    margin-top: 40px;
+    padding: 16px;
+    background-color: rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+footer > a,
+footer > a:focus,
+footer > a:hover {
+    color: #eee;
 }

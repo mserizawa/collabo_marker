@@ -20,6 +20,10 @@
 
     </div> <!-- /container -->
 
+    <footer class="theme-font">
+        &copy; <a href="https://twitter.com/masato_serizawa" target="_blank">masato_serizawa</a>
+    </footer>
+
     <script src="<%= static_path(@conn, "/js/vendor.js") %>"></script>
     <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
 
