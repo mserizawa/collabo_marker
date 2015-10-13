@@ -17,7 +17,8 @@ angular.module("collaboMarkerApp", [])
             isFromMe = true,
             aceTextInputElement = null,
             cmEditorElement = null,
-            saveTimer = null;
+            saveTimer = null,
+            saveWaitTime = 2000;
 
         var socket = new Socket("/socket");
         socket.connect();
@@ -46,12 +47,16 @@ angular.module("collaboMarkerApp", [])
         editor.on("change", function(e) {
             if (isFromMe) {
                 channel.push("edit", { user: myself, event: e });
+                if (saveTimer) {
+                    clearTimeout(saveTimer);
+                }
+                saveTimer = setTimeout(save, saveWaitTime); 
             }
             document.getElementById("cm-preview").innerHTML = marked(editor.getValue());
             if (saveTimer) {
                 clearTimeout(saveTimer);
+                saveTimer = setTimeout(save, saveWaitTime); 
             }
-            saveTimer = setTimeout(save, 3000);
         });
 
         editor.session.selection.on("changeCursor", function(e) {
