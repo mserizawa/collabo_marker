@@ -37,7 +37,7 @@
 <div class="row">
     <div class="col-xs-12">
         <div id="cm-area-message">
-            <div id="cm-messages" data-scroll-to-bottom='receivedMessages.length'>
+            <div id="cm-messages" data-scroll-to-bottom="receivedMessages.length">
                 <div class="cm-message" ng-repeat="message in receivedMessages">
                     <span ng-style="{color: message.user.color}">■ </span>
                     {{ message.user.name }}: {{ message.message }}

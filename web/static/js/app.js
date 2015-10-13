@@ -2,14 +2,14 @@ import "deps/phoenix_html/web/static/js/phoenix_html"
 import {Socket} from "deps/phoenix/web/static/js/phoenix/"
 
 angular.module("collaboMarkerApp", [])
-    .directive('scrollToBottom', function(){
+    .directive("scrollToBottom", function(){
         return {
-            restrict: 'A',
+            restrict: "A",
             scope: {
-                trigger: '=scrollToBottom'
+                trigger: "=scrollToBottom"
             },
             link: function postLink(scope, elem) {
-                scope.$watch('trigger', function() {
+                scope.$watch("trigger", function() {
                     elem[0].scrollTop = elem[0].scrollHeight - elem[0].offsetHeight;
                 });
             }
@@ -32,6 +32,7 @@ angular.module("collaboMarkerApp", [])
             isFromMe = true,
             aceTextInputElement = null,
             cmEditorElement = null,
+            cmPreviewElement = null,
             saveTimer = null,
             saveWaitTime = 2000;
 
@@ -96,6 +97,7 @@ angular.module("collaboMarkerApp", [])
 
         editor.session.on("changeScrollTop", function() {
             calculateCursorScreenPosition();
+            calculatePreviewScrolltop();
         });
 
         function applyChangeEvent(event) {
@@ -168,6 +170,19 @@ angular.module("collaboMarkerApp", [])
             $scope.$apply();
         }
 
+        function calculatePreviewScrolltop() {
+            // XXX: want to more smoothly...
+            var startRow = editor.getFirstVisibleRow(),
+                rows = editor.getValue().split("\n").length,
+                ratio = startRow / rows;
+
+            if (!cmPreviewElement) {
+                cmPreviewElement = angular.element(document.querySelector("#cm-preview"))[0];
+            }
+            
+            cmPreviewElement.scrollTop = cmPreviewElement.scrollHeight * ratio;
+        }
+
         function save() {
             $http({
                 method: "POST",
@@ -234,4 +249,5 @@ angular.module("collaboMarkerApp", [])
             channel.push("message", { user: myself, message: $scope.inputMessage });
             $scope.inputMessage = "";
         };
+
     });
