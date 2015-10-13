@@ -138,7 +138,7 @@ angular.module("collaboMarkerApp", [])
                     offsetTop = box.top + window.pageYOffset - de.clientTop,
                     offsetLeft = box.left + window.pageXOffset - de.clientLeft;
 
-                var top = user.cursor.top - editor.getSession().getScrollTop() + 4;
+                var top = user.cursor.top + user.cursor.scrollTop - editor.getSession().getScrollTop() + 4;
                 user.cursor.hidden = (top < 0 || top > 500);
 
                 user.cursor.screenLeft = user.cursor.left + offsetLeft + "px";
