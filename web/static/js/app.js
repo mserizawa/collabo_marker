@@ -2,9 +2,24 @@ import "deps/phoenix_html/web/static/js/phoenix_html"
 import {Socket} from "deps/phoenix/web/static/js/phoenix/"
 
 angular.module("collaboMarkerApp", [])
+    .directive('scrollToBottom', function(){
+        return {
+            restrict: 'A',
+            scope: {
+                trigger: '=scrollToBottom'
+            },
+            link: function postLink(scope, elem) {
+                scope.$watch('trigger', function() {
+                    elem[0].scrollTop = elem[0].scrollHeight - elem[0].offsetHeight;
+                });
+            }
+        };
+    })
     .controller("CollaboMarkerController", function($scope, $http) {
 
         $scope.users = [];
+        $scope.inputMessage = "";
+        $scope.receivedMessages = [];
 
         var editor = ace.edit("cm-editor"),
             // TODO: これは後でログイン的な機構で代替する
@@ -206,4 +221,17 @@ angular.module("collaboMarkerApp", [])
             $scope.$apply();
             calculateCursorScreenPosition();
         });
+
+        channel.on("message", function(dt) {
+            $scope.receivedMessages.push(dt);
+            $scope.$apply();
+        });
+
+        $scope.sendMessage = function() {
+            if (!$scope.inputMessage) {
+                return;
+            }
+            channel.push("message", { user: myself, message: $scope.inputMessage });
+            $scope.inputMessage = "";
+        };
     });

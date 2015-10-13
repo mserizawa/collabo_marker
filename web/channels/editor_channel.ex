@@ -37,6 +37,11 @@ defmodule CollaboMarker.EditorChannel do
     {:noreply, socket}
   end
 
+  def handle_in("message", %{"message" => message, "user" => user}, socket) do
+    broadcast! socket, "message", %{message: message, user: user}
+    {:noreply, socket}
+  end
+
   def handle_info(:ping, socket) do
     push socket, "ping", %{body: "ping", user: "SYSTEM"}
     {:noreply, socket}
