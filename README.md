@@ -16,3 +16,7 @@ A Collaborative real-time markdown editor.
 - [x] Fix layout
 - [x] Synchronize scrollTop between editor and preview
 - [ ] Set cursor position on load
+- [ ] Remove unnecessary files
+- [ ] Writer README
+- [ ] Put 'Deploy to Heroku'
+
