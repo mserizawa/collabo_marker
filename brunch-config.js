@@ -15,11 +15,11 @@ exports.config = {
       // https://github.com/brunch/brunch/tree/master/docs#concatenation
       order: {
         before: [
-          // "web/static/vendor/js/jquery-2.1.1.js",
-          // "web/static/vendor/js/bootstrap.min.js"
+          "web/static/vendor/ace.js",
+          "web/static/vendor/angular.min.js"
         ],
         after: [
-          "web/static/vendor/js/ace.js"
+          "web/static/vendor/angular-cookies.min.js"
         ]
       }
     },
