@@ -19,7 +19,6 @@ exports.config = {
           "web/static/vendor/angular.min.js"
         ],
         after: [
-          "web/static/vendor/angular-cookies.min.js"
         ]
       }
     },
