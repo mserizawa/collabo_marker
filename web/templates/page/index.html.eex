@@ -86,3 +86,7 @@
         {{ user.name }}
     </span>
 </div>
+
+<div id="cm-toast" ng-if="toast" ng-style="{'background-color': getColorFromType(toast.type)}">
+    <span>{{ toast.message }}</span>
+</div>

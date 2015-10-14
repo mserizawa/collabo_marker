@@ -21,6 +21,7 @@ angular.module("collaboMarkerApp", [])
         $scope.input = {};
         $scope.receivedMessages = [];
         $scope.myself = null;
+        $scope. toast = null;
 
         var editor = ace.edit("cm-editor"),
             // 他ユーザからの push が無限ループしないように制御するフラグ
@@ -119,7 +120,7 @@ angular.module("collaboMarkerApp", [])
                         contents.splice(i + event.start.row, 0, event.lines[i]);
                     }
                 });
-                // 最後に remainedLine を足します
+                // append remainedLine at the last line
                 var endLine = contents[event.end.row];
                 contents[event.end.row] = endLine.substring(0, event.end.column) + remainedLine + endLine.substring(event.end.column);
             } else if (action === "remove") {
@@ -130,7 +131,7 @@ angular.module("collaboMarkerApp", [])
                             remainedLine = contents[event.start.row].substring(0, event.start.column);
                         }
                         contents.splice(event.start.row, 1);
-                    } else {    // 最後行
+                    } else {    // last line
                         var startColumn = 0;
                         if (event.start.row === event.end.row) {
                             startColumn = event.start.column;
@@ -141,7 +142,7 @@ angular.module("collaboMarkerApp", [])
                 });
             }
 
-            // content の内容を editor に反映する
+            // apply content to editor
             var cursor = editor.getCursorPosition(),
                 range = editor.getSelection().getRange();
             editor.setValue(contents.join("\n"), -1);
@@ -200,6 +201,19 @@ angular.module("collaboMarkerApp", [])
             });
         }
 
+        function showToastMessage(type, message, _interval) {
+            $scope.toast = {
+                type: type,
+                message: message
+            };
+            $scope.$apply();
+            var interval = _interval || 3000;
+            setTimeout(function() {
+                $scope.toast = null;
+                $scope.$apply();
+            }, interval);
+        }
+
         channel.on("edit", function(dt) {
             if ($scope.myself && dt.user.name === $scope.myself.name) {
                 return;
@@ -218,16 +232,6 @@ angular.module("collaboMarkerApp", [])
                     user = elem;
                 }
             });
-            if (!user) {
-                // TODO: create init function
-                user = {
-                    name: dt.user.name,
-                    color: dt.user.color,
-                    cursor: { left: 0, top: 0, scrollTop: 0,
-                        screenLeft: "0px", screenTop: "0px", hidden: false }
-                };
-                $scope.users.push(user);
-            }
             user.cursor.left = dt.position.left;
             user.cursor.top = dt.position.top;
             user.cursor.scrollTop = dt.position.scrollTop;
@@ -243,6 +247,9 @@ angular.module("collaboMarkerApp", [])
             });
             $scope.$apply();
             calculateCursorScreenPosition();
+
+            // TODO: show join or disconnect message
+
         });
 
         channel.on("message", function(dt) {
@@ -262,12 +269,25 @@ angular.module("collaboMarkerApp", [])
             if (!$scope.input.name) {
                 return;
             }
-            $scope.myself = {
+            var user = {
                 name: $scope.input.name,
                 color: randomColor({luminosity: "light"})
             };
-            channel.push("join", { user: $scope.myself });
-            editor.setReadOnly(false);
+            channel.push("join", { user: user }).receive("ok", function(msg) {
+                $scope.myself = user;
+                editor.setReadOnly(false);
+                showToastMessage("note", "Welcome! " + user.name);
+            }).receive("error", function(msg) {
+                showToastMessage("alert", "User name is duplicated!");
+            });
         };
+
+        $scope.getColorFromType = function(type) {
+            if (type === "alert") {
+                return "rgba(255, 100, 100, 0.5)";
+            } else {
+                return "rgba(100, 255, 100, 0.5)";
+            }
+        }
 
     });

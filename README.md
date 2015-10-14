@@ -17,9 +17,9 @@ A Collaborative real-time markdown editor.
 - [x] Synchronize scrollTop between editor and preview
 - [x] Hide cursors on load
 - [ ] Save login status to cookie
-- [ ] Keep user names unique
-- [ ] Improve login UX
+- [x] Keep user names unique
+- [x] Improve login UX
+- [ ] Show join / disconnected message
 - [ ] Remove unnecessary files
 - [ ] Write README
 - [ ] Put 'Deploy to Heroku'
-

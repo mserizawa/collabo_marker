@@ -12,16 +12,26 @@ defmodule CollaboMarker.EditorChannel do
   end
 
   def handle_in("join", %{"user" => user}, socket) do
-    socket = assign(socket, :user, user["name"])
-    Process.flag(:trap_exit, true)
-    :timer.send_interval(5000, :ping)
-
     users = ConCache.get(:cache, "users")
-    users = List.insert_at(users, -1, user)
-    ConCache.put(:cache, "users", users)
+    user_names = users |> Enum.map(fn(e) -> e["name"] end)
 
-    broadcast! socket, "update_user", %{"users": ConCache.get(:cache, "users")}
-    {:noreply, socket}
+    case !Enum.member?(user_names, user["name"]) do
+      true -> (
+        socket = assign(socket, :user, user["name"])
+        Process.flag(:trap_exit, true)
+        :timer.send_interval(5000, :ping)
+
+        users = List.insert_at(users, -1, user)
+        ConCache.put(:cache, "users", users)
+
+        broadcast! socket, "update_user", %{"users": ConCache.get(:cache, "users")}
+        {:reply, {:ok, %{}}, socket}
+      )
+      false -> (
+        {:reply, {:error, %{}}, socket}
+      )
+    end
+
   end
 
   def handle_in("edit", %{"event" => event, "user" => user}, socket) do

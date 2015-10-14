@@ -147,6 +147,18 @@ body {
     background-color: rgba(255, 255, 255, 0.2);
 }
 
+#cm-toast {
+    position: fixed;
+    top: 40px;
+    left: 50%;
+    width: 250px;
+    padding: 4px 10px;
+    margin-left: -125px;
+    border-radius: 4px;
+    text-align: center;
+    z-index: 1000;
+}
+
 footer {
     position: absolute;
     width: 100%;
