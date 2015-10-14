@@ -1,29 +1,26 @@
 defmodule CollaboMarker.EditorChannel do
   use Phoenix.Channel
 
-  def join("editor:lobby", auth_msg, socket) do
-    socket = assign(socket, :user, auth_msg["user"]["name"])
-    Process.flag(:trap_exit, true)
-    :timer.send_interval(5000, :ping)
-
+  def join("editor:lobby", _auth_msg, socket) do
     users = ConCache.get_or_store(:cache, "users", fn() -> [] end)
-    users = List.insert_at(users, -1, auth_msg["user"])
-    ConCache.put(:cache, "users", users)
-
-    send(self, :after_join)
-
     contents = ConCache.get_or_store(:cache, "contents", fn() -> "" end)
 
-    # TODO: send current contents
     {:ok, %{"users" => users, "contents" => contents}, socket}
   end
   def join("editor:" <> _private_room_id, _auth_msg, socket) do
     {:error, %{reason: "unauthorized"}}
   end
 
-  def handle_info(:after_join, socket) do
-    broadcast! socket, "update_user", %{"users": ConCache.get(:cache, "users")}
+  def handle_in("join", %{"user" => user}, socket) do
+    socket = assign(socket, :user, user["name"])
+    Process.flag(:trap_exit, true)
+    :timer.send_interval(5000, :ping)
 
+    users = ConCache.get(:cache, "users")
+    users = List.insert_at(users, -1, user)
+    ConCache.put(:cache, "users", users)
+
+    broadcast! socket, "update_user", %{"users": ConCache.get(:cache, "users")}
     {:noreply, socket}
   end
 
@@ -48,13 +45,18 @@ defmodule CollaboMarker.EditorChannel do
   end
 
   def terminate(reason, socket) do
-    user_name = socket.assigns.user
-    users = ConCache.get(:cache, "users")
-      |> Enum.filter(fn(user) -> user["name"] != user_name end)
-    ConCache.put(:cache, "users", users)
+    case Map.get(socket.assigns, :user) do
+      nil -> :ok
+      _ -> (
+        user_name = socket.assigns.user
+        users = ConCache.get(:cache, "users")
+          |> Enum.filter(fn(user) -> user["name"] != user_name end)
+        ConCache.put(:cache, "users", users)
 
-    broadcast! socket, "update_user", %{"users": users}
+        broadcast! socket, "update_user", %{"users": users}
 
-    :ok
+        :ok
+      )
+    end
   end
 end

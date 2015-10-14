@@ -18,15 +18,11 @@ angular.module("collaboMarkerApp", [])
     .controller("CollaboMarkerController", function($scope, $http) {
 
         $scope.users = [];
-        $scope.inputMessage = "";
+        $scope.input = {};
         $scope.receivedMessages = [];
+        $scope.myself = null;
 
         var editor = ace.edit("cm-editor"),
-            // TODO: これは後でログイン的な機構で代替する
-            myself = {
-                name: Math.random().toString(36).slice(-8),
-                color: randomColor({luminosity: "light"})
-            },
             // 他ユーザからの push が無限ループしないように制御するフラグ
             // （ace の仕様上、これがないとうまく制御できなかったため）
             isFromMe = true,
@@ -38,7 +34,7 @@ angular.module("collaboMarkerApp", [])
 
         var socket = new Socket("/socket");
         socket.connect();
-        var channel = socket.channel("editor:lobby", {user: myself});
+        var channel = socket.channel("editor:lobby", {});
         channel.join().receive("ok", function(dt) {
             dt.users.forEach(function(user) {
                 user.cursor = {};
@@ -56,13 +52,14 @@ angular.module("collaboMarkerApp", [])
         editor.setTheme("ace/theme/monokai");
         editor.getSession().setMode("ace/mode/markdown");
         editor.getSession().setUseWrapMode(true);
+        editor.setReadOnly(true);
 
         editor.on("input", function() {
             isFromMe = true;
         });
         editor.on("change", function(e) {
             if (isFromMe) {
-                channel.push("edit", { user: myself, event: e });
+                channel.push("edit", { user: $scope.myself, event: e });
                 if (saveTimer) {
                     clearTimeout(saveTimer);
                 }
@@ -76,6 +73,9 @@ angular.module("collaboMarkerApp", [])
         });
 
         editor.session.selection.on("changeCursor", function(e) {
+            if (!$scope.myself) {
+                return;
+            }
             // .ace_text-input に座標が適応されるのに少しラグがあるので、100ms 遅延させます
             setTimeout(function() {
                 // getCursorPosition だと正確な絶対座標が割り出せないため、ace_text-input の座標を利用します
@@ -95,7 +95,7 @@ angular.module("collaboMarkerApp", [])
                     return;
                 }
 
-                channel.push("move", { user: myself, position: {left: left, top: top, scrollTop: scrollTop} });
+                channel.push("move", { user: $scope.myself, position: {left: left, top: top, scrollTop: scrollTop} });
             }, 100);
         });
 
@@ -155,7 +155,7 @@ angular.module("collaboMarkerApp", [])
             }
 
             $scope.users.forEach(function(user) {
-                if (user.name === myself.name) {
+                if ($scope.myself && user.name === $scope.myself.name) {
                     user.cursor.hidden = true;
                     return;
                 }
@@ -201,7 +201,7 @@ angular.module("collaboMarkerApp", [])
         }
 
         channel.on("edit", function(dt) {
-            if (dt.user.name === myself.name) {
+            if ($scope.myself && dt.user.name === $scope.myself.name) {
                 return;
             }
             isFromMe = false;
@@ -209,7 +209,7 @@ angular.module("collaboMarkerApp", [])
         });
 
         channel.on("move", function(dt) {
-            if (dt.user.name === myself.name) {
+            if ($scope.myself && dt.user.name === $scope.myself.name) {
                 return;
             }
             var user = null;
@@ -251,11 +251,23 @@ angular.module("collaboMarkerApp", [])
         });
 
         $scope.sendMessage = function() {
-            if (!$scope.inputMessage) {
+            if (!$scope.input.message) {
                 return;
             }
-            channel.push("message", { user: myself, message: $scope.inputMessage });
-            $scope.inputMessage = "";
+            channel.push("message", { user: $scope.myself, message: $scope.input.message });
+            $scope.input.message = "";
+        };
+
+        $scope.join = function() {
+            if (!$scope.input.name) {
+                return;
+            }
+            $scope.myself = {
+                name: $scope.input.name,
+                color: randomColor({luminosity: "light"})
+            };
+            channel.push("join", { user: $scope.myself });
+            editor.setReadOnly(false);
         };
 
     });

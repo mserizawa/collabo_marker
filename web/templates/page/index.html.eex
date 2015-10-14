@@ -28,31 +28,54 @@
     </div>
 </div>
 
-<div class="row">
-    <div class="col-xs-12">
-        <h5 class="theme-font"><span class="glyphicon glyphicon-comment"></span> Messages</h5>
+<section ng-if="myself != null">
+    <div class="row">
+        <div class="col-xs-12">
+            <h5 class="theme-font"><span class="glyphicon glyphicon-comment"></span> Messages</h5>
+        </div>
     </div>
-</div>
 
-<div class="row">
-    <div class="col-xs-12">
-        <div id="cm-area-message">
-            <div id="cm-messages" data-scroll-to-bottom="receivedMessages.length">
-                <div class="cm-message" ng-repeat="message in receivedMessages">
-                    <span ng-style="{color: message.user.color}">■ </span>
-                    {{ message.user.name }}: {{ message.message }}
+    <div class="row">
+        <div class="col-xs-12">
+            <div id="cm-area-message">
+                <div id="cm-messages" data-scroll-to-bottom="receivedMessages.length">
+                    <div class="cm-message" ng-repeat="message in receivedMessages">
+                        <span ng-style="{color: message.user.color}">■ </span>
+                        {{ message.user.name }}: {{ message.message }}
+                    </div>
+                </div>
+                <div id="cm-area-input-message">
+                    <form ng-submit="sendMessage()">
+                        <span class="glyphicon glyphicon-pencil"></span>
+                        <input type="text" class="input-transparent" id="cm-input-message"
+                                ng-model="input.message"></input>
+                    </form>
                 </div>
             </div>
-            <div id="cm-area-input-message">
-                <form ng-submit="sendMessage()">
-                    <span class="glyphicon glyphicon-pencil"></span>
-                    <input type="text" id="cm-input-message"
-                            ng-model="inputMessage"></input>
+        </div>
+    </div>
+</section>
+
+<section ng-if="myself == null" id="cm-area-input-name">
+    <div class="row">
+        <div class="col-xs-12">
+            <h5 class="theme-font"><span class="glyphicon glyphicon-bullhorn"></span> Let's Join !</h5>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <div>
+                <form ng-submit="join()">
+                    <span class="theme-font">Your name here: </span>
+                    <input type="text" class="input-transparent" id="cm-input-name"
+                            ng-model="input.name" maxlength="20" size="25"></input>
+                    <button class="theme-font" id="cm-button-join" type="submit">Join</button>
                 </form>
             </div>
         </div>
     </div>
-</div>
+</section>
 
 <div class="cm-cursor" ng-repeat="user in users" ng-if="!user.cursor.hidden"
        ng-style="{left: user.cursor.screenLeft, top: user.cursor.screenTop}">
