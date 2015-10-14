@@ -15,8 +15,8 @@ A Collaborative real-time markdown editor.
 - [x] Implement chat function
 - [x] Fix layout
 - [x] Synchronize scrollTop between editor and preview
-- [ ] Set cursor position on load
+- [x] Hide cursors on load
 - [ ] Remove unnecessary files
-- [ ] Writer README
+- [ ] Write README
 - [ ] Put 'Deploy to Heroku'
 

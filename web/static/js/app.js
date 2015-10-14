@@ -91,6 +91,10 @@ angular.module("collaboMarkerApp", [])
                 top = Number(top.substring(0, top.length - 2));
                 left = Number(left.substring(0, left.length - 2));
 
+                if (top === 0 || left === 0) {
+                    return;
+                }
+
                 channel.push("move", { user: myself, position: {left: left, top: top, scrollTop: scrollTop} });
             }, 100);
         });
@@ -152,6 +156,10 @@ angular.module("collaboMarkerApp", [])
 
             $scope.users.forEach(function(user) {
                 if (user.name === myself.name) {
+                    user.cursor.hidden = true;
+                    return;
+                }
+                if (!("top" in user.cursor) || !("left" in user.cursor)) {
                     user.cursor.hidden = true;
                     return;
                 }
