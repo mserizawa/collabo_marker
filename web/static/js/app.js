@@ -41,8 +41,13 @@ angular.module("collaboMarkerApp", [])
                 user.cursor = {};
                 $scope.users.push(user);
             });
+            var contents = dt.contents;
+            if ($scope.users.length == 0 && !contents) {
+                contents = "# ‘Allo, ‘Allo!\n\n---\n\n* Maybe, You are the first person to come here!\n* Fill the name in the input box below and let's get started!"
+;
+            }
             isFromMe = false;
-            editor.setValue(dt.contents);
+            editor.setValue(contents);
             editor.clearSelection();
             calculateCursorScreenPosition();
 
