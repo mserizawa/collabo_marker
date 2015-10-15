@@ -4,6 +4,8 @@ A Collaborative real-time markdown editor.
 
 **Note: This is alpha software.**
 
+[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
+
 ## TODO
 
 - [x] Implement cursor rendering function

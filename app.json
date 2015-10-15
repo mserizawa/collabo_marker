@@ -1,0 +1,26 @@
+{
+  "name": "Collabo Marker",
+  "description": "A Collaborative real-time markdown editor implemented in Elixir.",
+  "keywords": [
+    "elixir",
+    "phoenix",
+    "websocket",
+    "markdown"
+  ],
+  "repository": "https://github.com/mserizawa/collabo_marker",
+  "success_url": "/",
+  "env": {
+    "HOST": {
+        "description": "The host name that you are going to deploy. Usually, '{{ AppName }}.herokuapp.com'.",
+        "value": "{{ AppName }}.herokuapp.com"
+    }
+  },
+  "buildpacks": [
+    {
+      "url": "https://github.com/heroku/heroku-buildpack-nodejs.git"
+    },
+    {
+      "url": "https://github.com/HashNuke/heroku-buildpack-elixir.git"
+    }
+  ]
+}
