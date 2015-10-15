@@ -1,10 +1,52 @@
 # CollaboMarker
 
+---
+
 A Collaborative real-time markdown editor.
 
-**Note: This is alpha software.**
-
 [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
+
+## Features
+
+The current version of Collabo Marker provides a basic features below:
+
+* Collaborative edit
+* Live markdown preview
+* Sync scroll between editor and preview
+* Chat with collaborators
+
+## How to start
+
+### Your local
+
+First of all, install softwares below.
+
+* elixir
+* phoenix
+* npm
+
+And then
+
+```sh
+$ git clone https://github.com/mserizawa/collabo_marker.git
+$ cd collabo_marker/
+$ npm install
+$ mix deps.get
+$ elixir --detached -S mix phoenix.server
+```
+
+Now you can use CollaboMarker on `http://localhost:4000/` .
+
+
+### Heroku
+
+Use Deploy to Heroku button and enjoy.
+
+## Recommended browser
+
+* Chrome: latest
+* Firefox: latest
+* Safari: latest
 
 ## TODO
 
@@ -23,5 +65,6 @@ A Collaborative real-time markdown editor.
 - [x] Improve login UX
 - [ ] Show join / disconnected message
 - [ ] Remove unnecessary files
-- [ ] Write README
-- [ ] Put 'Deploy to Heroku'
+- [x] Write README
+- [x] Put 'Deploy to Heroku'
+- [ ] Fix the bug of losing others inputs
