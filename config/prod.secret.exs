@@ -4,7 +4,7 @@ use Mix.Config
 # you likely want to automate and keep it away from
 # your version control system.
 config :collabo_marker, CollaboMarker.Endpoint,
-  secret_key_base: "RawvHMJQ8AW4VY1eMJStuSSg/cS6+JtLU6shqF/I2xu43rso3C71xy7jmZSDeDw/"
+  secret_key_base: System.get_env("SECRET_KEY_BASE")
 
 # Configure your database
 config :collabo_marker, CollaboMarker.Repo,
