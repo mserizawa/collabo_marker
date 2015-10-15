@@ -15,7 +15,7 @@ angular.module("collaboMarkerApp", [])
             }
         };
     })
-    .controller("CollaboMarkerController", function($scope, $http) {
+    .controller("CollaboMarkerController", ["$scope", "$http", function($scope, $http) {
 
         $scope.users = [];
         $scope.input = {};
@@ -291,4 +291,4 @@ angular.module("collaboMarkerApp", [])
             }
         }
 
-    });
+    }]);
