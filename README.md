@@ -1,10 +1,12 @@
 # CollaboMarker
 
----
-
 A Collaborative real-time markdown editor.
 
 [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
+
+## Capture
+
+![aa](https://raw.githubusercontent.com/wiki/mserizawa/collabo_marker/images/collabomarker_cap.png)
 
 ## Features
 
