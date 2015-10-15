@@ -62,16 +62,12 @@ angular.module("collaboMarkerApp", [])
         editor.on("change", function(e) {
             if (isFromMe) {
                 channel.push("edit", { user: $scope.myself, event: e });
-                if (saveTimer) {
-                    clearTimeout(saveTimer);
-                }
-                saveTimer = setTimeout(save, saveWaitTime); 
             }
             document.getElementById("cm-preview").innerHTML = marked(editor.getValue());
             if (saveTimer) {
                 clearTimeout(saveTimer);
-                saveTimer = setTimeout(save, saveWaitTime); 
             }
+            saveTimer = setTimeout(save, saveWaitTime); 
         });
 
         editor.session.selection.on("changeCursor", function(e) {
