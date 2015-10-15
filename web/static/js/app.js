@@ -44,6 +44,7 @@ angular.module("collaboMarkerApp", [])
             isFromMe = false;
             editor.setValue(dt.contents);
             editor.clearSelection();
+            calculateCursorScreenPosition();
 
             $scope.$apply();
         });
@@ -92,7 +93,7 @@ angular.module("collaboMarkerApp", [])
                 top = Number(top.substring(0, top.length - 2));
                 left = Number(left.substring(0, left.length - 2));
 
-                if (top === 0 || left === 0) {
+                if (top === 0 && left === 0) {
                     return;
                 }
 
