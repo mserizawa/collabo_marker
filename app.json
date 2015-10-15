@@ -13,6 +13,10 @@
     "HOST": {
         "description": "The host name that you are going to deploy. Usually, '{{ AppName }}.herokuapp.com'.",
         "value": "{{ AppName }}.herokuapp.com"
+    },
+    "PORT": {
+        "description": "Specify the port number.",
+        "value": "80"
     }
   },
   "buildpacks": [
