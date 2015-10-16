@@ -64,6 +64,7 @@ angular.module("collaboMarkerApp", [])
         editor.on("input", function() {
             isFromMe = true;
         });
+
         editor.on("change", function(e) {
             if (isFromMe) {
                 channel.push("edit", { user: $scope.myself, event: e });
@@ -108,48 +109,13 @@ angular.module("collaboMarkerApp", [])
         });
 
         function applyChangeEvent(event) {
-            var contents = editor.getValue().split("\n");
+            var doc = editor.getSession().getDocument();
             var action = event.action;
-
             if (action === "insert") {
-                var remainedLine = "";
-                event.lines.forEach(function(line, i) {
-                    if (i === 0) {
-                        var startLine = contents[event.start.row];
-                        contents[event.start.row] = startLine.substring(0, event.start.column) + event.lines[i];
-                        remainedLine = startLine.substring(event.start.column);
-                    } else {
-                        contents.splice(i + event.start.row, 0, event.lines[i]);
-                    }
-                });
-                // append remainedLine at the last line
-                var endLine = contents[event.end.row];
-                contents[event.end.row] = endLine.substring(0, event.end.column) + remainedLine + endLine.substring(event.end.column);
+                doc.insertMergedLines(event.start, event.lines);
             } else if (action === "remove") {
-                var remainedLine = "";
-                event.lines.forEach(function(line, i) {
-                    if (event.lines.length > 1 && i < event.lines.length - 1) {
-                        if (i === 0) {
-                            remainedLine = contents[event.start.row].substring(0, event.start.column);
-                        }
-                        contents.splice(event.start.row, 1);
-                    } else {    // last line
-                        var startColumn = 0;
-                        if (event.start.row === event.end.row) {
-                            startColumn = event.start.column;
-                        }
-                        var startLine = contents[event.start.row];
-                        contents[event.start.row] = remainedLine + startLine.substring(0, startColumn) + startLine.substring(event.end.column);
-                    }
-                });
+                doc.remove(event);
             }
-
-            // apply content to editor
-            var cursor = editor.getCursorPosition(),
-                range = editor.getSelection().getRange();
-            editor.setValue(contents.join("\n"), -1);
-            editor.moveCursorTo(cursor.row, cursor.column);
-            editor.getSelection().setRange(range);
         }
 
         function calculateCursorScreenPosition() {
@@ -184,13 +150,12 @@ angular.module("collaboMarkerApp", [])
         function calculatePreviewScrolltop() {
             // XXX: want to more smoothly...
             var startRow = editor.getFirstVisibleRow(),
-                rows = editor.getValue().split("\n").length,
-                ratio = startRow / rows;
+                length = editor.getSession().getDocument().getLength(),
+                ratio = startRow / length;
 
             if (!cmPreviewElement) {
                 cmPreviewElement = angular.element(document.querySelector("#cm-preview"))[0];
             }
-            
             cmPreviewElement.scrollTop = cmPreviewElement.scrollHeight * ratio;
         }
 
