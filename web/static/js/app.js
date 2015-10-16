@@ -21,7 +21,7 @@ angular.module("collaboMarkerApp", [])
         $scope.input = {};
         $scope.receivedMessages = [];
         $scope.myself = null;
-        $scope. toast = null;
+        $scope.toast = null;
 
         var editor = ace.edit("cm-editor"),
             // 他ユーザからの push が無限ループしないように制御するフラグ
@@ -31,7 +31,10 @@ angular.module("collaboMarkerApp", [])
             cmEditorElement = null,
             cmPreviewElement = null,
             saveTimer = null,
-            saveWaitTime = 2000;
+            saveWaitTime = 2000,
+            applyTimer = null,
+            applyWaitTime = 500,
+            isAfterApply = false;
 
         var socket = new Socket("/socket");
         socket.connect();
@@ -66,6 +69,9 @@ angular.module("collaboMarkerApp", [])
         });
 
         editor.on("change", function(e) {
+            if (isAfterApply) {
+                return;
+            }
             if (isFromMe) {
                 channel.push("edit", { user: $scope.myself, event: e });
             }
@@ -74,6 +80,10 @@ angular.module("collaboMarkerApp", [])
                 clearTimeout(saveTimer);
             }
             saveTimer = setTimeout(save, saveWaitTime); 
+            if (applyTimer) {
+                clearTimeout(applyTimer);
+            }
+            applyTimer = setTimeout(applyContent, applyWaitTime);
         });
 
         editor.session.selection.on("changeCursor", function(e) {
@@ -166,6 +176,18 @@ angular.module("collaboMarkerApp", [])
                 data: { contents: editor.getValue() },
                 headers: ["application/json"]
             });
+        }
+
+        function applyContent() {
+            editor.setReadOnly(true);
+            isAfterApply = true;
+            var cursor = editor.getCursorPosition(),
+                range = editor.getSelection().getRange();
+            editor.setValue(editor.getValue());
+            editor.moveCursorTo(cursor.row, cursor.column);
+            editor.getSelection().setRange(range);
+            editor.setReadOnly(false);
+            isAfterApply = false;
         }
 
         function showToastMessage(type, message, _interval) {
