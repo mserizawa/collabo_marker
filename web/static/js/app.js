@@ -110,11 +110,9 @@ angular.module("collaboMarkerApp", [])
             calculatePreviewScrolltop();
         });
 
-        var tmpReadOnlyStatus;
         function applyChangeEvent() {
             isApplyProceeding = true;
             var event = changeStack.shift();
-            tmpReadOnlyStatus = editor.getReadOnly();
             editor.setReadOnly(true);
             isFromMe = false;
             var doc = editor.getSession().getDocument();
@@ -124,12 +122,12 @@ angular.module("collaboMarkerApp", [])
             } else if (action === "remove") {
                 doc.remove(event);
             }
-                console.log(changeStack.length);
+
             if (changeStack.length) {
                 applyChangeEvent();
             } else {
                 setTimeout(function() {
-                    editor.setReadOnly(tmpReadOnlyStatus);
+                    editor.setReadOnly($scope.myself == null);
                 }, 100);
                 isApplyProceeding = false;
             }
