@@ -32,7 +32,8 @@ angular.module("collaboMarkerApp", [])
             cmPreviewElement = null,
             saveTimer = null,
             saveWaitTime = 2000,
-            changeStack = [];
+            changeStack = [],
+            isApplyProceeding = false;
 
         var socket = new Socket("/socket");
         socket.connect();
@@ -110,6 +111,7 @@ angular.module("collaboMarkerApp", [])
         });
 
         function applyChangeEvent() {
+            isApplyProceeding = true;
             var event = changeStack.shift();
             var readOnly = editor.getReadOnly();
             editor.setReadOnly(true);
@@ -124,6 +126,8 @@ angular.module("collaboMarkerApp", [])
             editor.setReadOnly(readOnly);
             if (changeStack.length) {
                 applyChangeEvent();
+            } else {
+                isApplyProceeding = false;
             }
         }
 
@@ -196,7 +200,9 @@ angular.module("collaboMarkerApp", [])
             }
             changeStack.push(dt.event);
             // isFromMe = false;
-            applyChangeEvent();
+            if (!isApplyProceeding) {
+                applyChangeEvent();
+            }
         });
 
         channel.on("move", function(dt) {
