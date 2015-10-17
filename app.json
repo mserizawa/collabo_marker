@@ -9,12 +9,6 @@
   ],
   "repository": "https://github.com/mserizawa/collabo_marker",
   "success_url": "/",
-  "env": {
-    "HOST": {
-        "description": "The host name that you are going to deploy. Usually, '{{ AppName }}.herokuapp.com'.",
-        "value": "{{ AppName }}.herokuapp.com"
-    }
-  },
   "buildpacks": [
     {
       "url": "https://github.com/HashNuke/heroku-buildpack-elixir.git"

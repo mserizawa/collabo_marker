@@ -13,7 +13,7 @@ use Mix.Config
 # which you typically run after static files are built.
 config :collabo_marker, CollaboMarker.Endpoint,
   http: [port: System.get_env("PORT")],
-  url: [host: System.get_env("HOST"), port: 443],
+  url: [host: System.get_env("URL"), port: 443],
   cache_static_manifest: "priv/static/manifest.json"
 
 # Do not print debug messages in production
