@@ -2,6 +2,10 @@
 
 A Collaborative real-time markdown editor.
 
+This is *beta version* software.
+
+
+
 [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
 
 ## Capture
@@ -16,6 +20,22 @@ The current version of Collabo Marker provides a basic features below:
 * Live markdown preview
 * Sync scroll between editor and preview
 * Chat with collaborators
+
+## Beta version caution
+
+### Do not support IME input officially
+
+If you want to input Japanese, Chinese or other language which needs IME, try to access Collabo Marker with request parameter `enable-ime=true` . But please note that there are a lot of bugs...
+
+```
+http://localhost:4000/?enable-ime=true
+```
+
+
+### Do not ensure  perfect document sync
+
+When a lot of changes happens at the same time, documents may lose their Idempotence.
+
 
 ## How to start
 
@@ -70,3 +90,4 @@ Use Deploy to Heroku button and enjoy.
 - [x] Write README
 - [x] Put 'Deploy to Heroku'
 - [ ] Fix the bug of losing others inputs
+- [ ] Support IME input officially
