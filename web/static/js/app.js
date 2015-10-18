@@ -32,9 +32,9 @@ angular.module("collaboMarkerApp", [])
             cmPreviewElement = null,
             saveTimer = null,
             saveWaitTime = 2000,
-            applyTimer = null,
-            applyWaitTime = 500,
-            isAfterApply = false;
+            changeStack = [],
+            isApplyProceeding = false,
+            applyTimer = null;;
 
         var socket = new Socket("/socket");
         socket.connect();
@@ -69,9 +69,6 @@ angular.module("collaboMarkerApp", [])
         });
 
         editor.on("change", function(e) {
-            if (isAfterApply) {
-                return;
-            }
             if (isFromMe) {
                 channel.push("edit", { user: $scope.myself, event: e });
             }
@@ -80,10 +77,6 @@ angular.module("collaboMarkerApp", [])
                 clearTimeout(saveTimer);
             }
             saveTimer = setTimeout(save, saveWaitTime); 
-            if (applyTimer) {
-                clearTimeout(applyTimer);
-            }
-            applyTimer = setTimeout(applyContent, applyWaitTime);
         });
 
         editor.session.selection.on("changeCursor", function(e) {
@@ -118,13 +111,29 @@ angular.module("collaboMarkerApp", [])
             calculatePreviewScrolltop();
         });
 
-        function applyChangeEvent(event) {
+        function applyChangeEvent() {
+            isApplyProceeding = true;
+            var event = changeStack.shift();
+            editor.setReadOnly(true);
+            isFromMe = false;
             var doc = editor.getSession().getDocument();
             var action = event.action;
             if (action === "insert") {
                 doc.insertMergedLines(event.start, event.lines);
             } else if (action === "remove") {
                 doc.remove(event);
+            }
+
+            if (changeStack.length) {
+                applyChangeEvent();
+            } else {
+                if (applyTimer) {
+                    clearTimeout(applyTimer);
+                }
+                applyTimer = setTimeout(function() {
+                    editor.setReadOnly($scope.myself == null);
+                }, 100);
+                isApplyProceeding = false;
             }
         }
 
@@ -178,18 +187,6 @@ angular.module("collaboMarkerApp", [])
             });
         }
 
-        function applyContent() {
-            editor.setReadOnly(true);
-            isAfterApply = true;
-            var cursor = editor.getCursorPosition(),
-                range = editor.getSelection().getRange();
-            editor.setValue(editor.getValue());
-            editor.moveCursorTo(cursor.row, cursor.column);
-            editor.getSelection().setRange(range);
-            editor.setReadOnly(false);
-            isAfterApply = false;
-        }
-
         function showToastMessage(type, message, _interval) {
             $scope.toast = {
                 type: type,
@@ -207,8 +204,11 @@ angular.module("collaboMarkerApp", [])
             if ($scope.myself && dt.user.name === $scope.myself.name) {
                 return;
             }
-            isFromMe = false;
-            applyChangeEvent(dt.event);
+            changeStack.push(dt.event);
+            // isFromMe = false;
+            if (!isApplyProceeding) {
+                applyChangeEvent();
+            }
         });
 
         channel.on("move", function(dt) {
