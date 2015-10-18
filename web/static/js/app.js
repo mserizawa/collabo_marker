@@ -33,7 +33,8 @@ angular.module("collaboMarkerApp", [])
             saveTimer = null,
             saveWaitTime = 2000,
             changeStack = [],
-            isApplyProceeding = false;
+            isApplyProceeding = false,
+            applyTimer = null;;
 
         var socket = new Socket("/socket");
         socket.connect();
@@ -126,7 +127,10 @@ angular.module("collaboMarkerApp", [])
             if (changeStack.length) {
                 applyChangeEvent();
             } else {
-                setTimeout(function() {
+                if (applyTimer) {
+                    clearTimeout(applyTimer);
+                }
+                applyTimer = setTimeout(function() {
                     editor.setReadOnly($scope.myself == null);
                 }, 100);
                 isApplyProceeding = false;
