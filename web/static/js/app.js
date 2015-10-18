@@ -33,7 +33,9 @@ angular.module("collaboMarkerApp", [])
             saveWaitTime = 2000,
             changeStack = [],
             isApplyProceeding = false,
-            applyTimer = null;;
+            applyTimer = null,
+            isIMEInput = false,
+            isIMEEnabled = false;
 
         var socket = new Socket("/socket");
         socket.connect();
@@ -275,6 +277,37 @@ angular.module("collaboMarkerApp", [])
             } else {
                 return "rgba(100, 255, 100, 0.5)";
             }
+        }
+
+        aceTextInputElement = document.getElementsByClassName("ace_text-input")[0];
+        aceTextInputElement.addEventListener("keydown", function(e) {
+            var keyCode = e.keyCode;
+            // prevent ime input
+            console.log(isIMEEnabled);
+            if (!isIMEEnabled &&
+                (keyCode === 0 || keyCode === 229 || isIMEInput)) {
+                e.preventDefault();
+            }
+        });
+        // check ime input for firefox
+        aceTextInputElement.addEventListener("keyup", function(e) {
+            var keyCode = e.keyCode;
+            if (keyCode === 21) {
+                isIMEInput = true;
+            } else if (keyCode === 22) {
+                isIMEInput = false;
+            }
+        });
+
+        var queries = window.location.search;
+        if (queries) {
+            queries.substring(1).split("&").forEach(function(query) {
+                var keyValue = query.split("=");
+                if (keyValue.length == 2 &&
+                    keyValue[0] === "ime-enabled" && keyValue[1] === "true") {
+                    isIMEEnabled = true;
+                }
+            });
         }
 
     }]);

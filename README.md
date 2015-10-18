@@ -5,7 +5,6 @@ A Collaborative real-time markdown editor.
 This is *beta version* software.
 
 
-
 [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
 
 ## Capture
@@ -25,10 +24,10 @@ The current version of Collabo Marker provides a basic features below:
 
 ### Do not support IME input officially
 
-If you want to input Japanese, Chinese or other language which needs IME, try to access Collabo Marker with request parameter `enable-ime=true` . But please note that there are a lot of bugs...
+If you want to input Japanese, Chinese or other language which needs IME, try to access Collabo Marker with request parameter `ime-enabled=true` . But please note that there are a lot of bugs...
 
 ```
-http://localhost:4000/?enable-ime=true
+http://localhost:4000/?ime-enabled=true
 ```
 
 
