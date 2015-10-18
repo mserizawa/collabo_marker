@@ -24,8 +24,7 @@ angular.module("collaboMarkerApp", [])
         $scope.toast = null;
 
         var editor = ace.edit("cm-editor"),
-            // 他ユーザからの push が無限ループしないように制御するフラグ
-            // （ace の仕様上、これがないとうまく制御できなかったため）
+            // the flag to prevent infinite change loop
             isFromMe = true,
             aceTextInputElement = null,
             cmEditorElement = null,
@@ -83,9 +82,9 @@ angular.module("collaboMarkerApp", [])
             if (!$scope.myself) {
                 return;
             }
-            // .ace_text-input に座標が適応されるのに少しラグがあるので、100ms 遅延させます
+            // wait 100ms until ace_text-input gets changed position
             setTimeout(function() {
-                // getCursorPosition だと正確な絶対座標が割り出せないため、ace_text-input の座標を利用します
+                // use ace_text-input position to get absolute cursor position on the screen
                 if (!aceTextInputElement) {
                     aceTextInputElement = document.getElementsByClassName("ace_text-input")[0];
                 }
@@ -205,7 +204,6 @@ angular.module("collaboMarkerApp", [])
                 return;
             }
             changeStack.push(dt.event);
-            // isFromMe = false;
             if (!isApplyProceeding) {
                 applyChangeEvent();
             }
